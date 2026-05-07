@@ -19,13 +19,12 @@ class TaskViewSet(viewsets.ModelViewSet):
 @login_required
 def dashboard(request):
 
-    if request.user.role == 'admin':
+    if request.user.is_authenticated and request.user.role == 'admin':
         tasks = Task.objects.all()
     else:
         tasks = Task.objects.filter(assigned_to=request.user)
 
-    if request.method == 'POST' and request.user.role == 'admin':
-
+    if request.method == 'POST' and request.user.is_authenticated and request.user.role == 'admin':
         form_type = request.POST.get('form_type')
 
         if form_type == 'project':
