@@ -36,10 +36,10 @@ REST APIs:
 
 Deployment:
 Live URL:
-Add your Railway URL here
+https://web-production-398954.up.railway.app/login/
 
 GitHub Repository:
-Add your GitHub repository URL here
+https://github.com/rukmini-dev/django-team-task-manager
 
 Demo Video:
 Add your demo video link here
