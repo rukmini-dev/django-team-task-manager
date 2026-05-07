@@ -8,7 +8,12 @@ from django.utils.timezone import now
 
 from projects.models import Project
 from users.models import User
-
+from .forms import TaskForm
+from django.shortcuts import (
+    render,
+    redirect,
+    get_object_or_404
+)
 
 class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
@@ -108,7 +113,20 @@ def tasks_page(request):
         'tasks/tasks.html',
         {'tasks': tasks}
     )
+@login_required
+def delete_task(request, id):
 
+    if request.user.role != 'admin':
+        return redirect('/')
+
+    task = get_object_or_404(
+        Task,
+        id=id
+    )
+
+    task.delete()
+
+    return redirect('/tasks-page/')
 
 @login_required
 def members_page(request):
@@ -119,4 +137,29 @@ def members_page(request):
         request,
         'members/members.html',
         {'users': users}
+    )
+@login_required
+def create_task(request):
+
+    if request.user.role != 'admin':
+        return redirect('/')
+
+    if request.method == 'POST':
+
+        form = TaskForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('/tasks-page/')
+
+    else:
+
+        form = TaskForm()
+
+    return render(
+        request,
+        'tasks/create_task.html',
+        {'form': form}
     )

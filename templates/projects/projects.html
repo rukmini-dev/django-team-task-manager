@@ -1,51 +1,99 @@
 {% extends 'base.html' %}
+
 {% block title %}
 Projects
 {% endblock %}
+
 {% block content %}
 
-<div class="d-flex justify-content-between mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<h1>Projects</h1>
+    <h1>
+        Projects
+    </h1>
 
-<a href="/admin/projects/project/add/"
-class="btn btn-success">
+    {% if request.user.role == 'admin' %}
 
-Create Project
+    <a
+        href="/create-project/"
+        class="btn btn-success"
+    >
 
-</a>
+        Create Project
+
+    </a>
+
+    {% endif %}
 
 </div>
 
 <div class="row">
 
-{% for project in projects %}
+    {% for project in projects %}
 
-<div class="col-md-4 mb-4">
+    <div class="col-md-4 mb-4">
 
-<div class="card p-4 shadow-sm">
+        <div class="card p-4 shadow-sm h-100">
 
-<h3>{{ project.title }}</h3>
+            <h3 class="mb-3">
 
-<p>{{ project.description }}</p>
+                {{ project.title }}
 
-<p>
-Tasks:
-{{ project.task_set.count }}
-</p>
+            </h3>
 
-<a href="/projects/{{ project.id }}/"
-class="btn btn-primary">
+            <p class="text-muted">
 
-View Tasks
+                {{ project.description }}
+
+            </p>
+
+            <p>
+
+                <strong>
+                    Tasks:
+                </strong>
+
+                {{ project.task_set.count }}
+
+            </p>
+
+            <a
+                href="/projects/{{ project.id }}/"
+                class="btn btn-primary mt-2"
+            >
+
+                View Tasks
+
+            </a>
+{% if request.user.role == 'admin' %}
+
+<a
+    href="/delete-project/{{ project.id }}/"
+    class="btn btn-danger mt-2"
+>
+
+    Delete
 
 </a>
 
-</div>
+{% endif %}
+        </div>
 
-</div>
+    </div>
 
-{% endfor %}
+    {% empty %}
+
+    <div class="col-12">
+
+        <div class="alert alert-light text-center shadow-sm">
+
+            No projects available
+
+        </div>
+
+    </div>
+
+    {% endfor %}
 
 </div>
 

@@ -1,89 +1,169 @@
 {% extends 'base.html' %}
+
 {% block title %}
 Tasks
 {% endblock %}
+
 {% block content %}
 
-<div class="d-flex justify-content-between mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-<h1>Tasks</h1>
+    <h1>
+        Tasks
+    </h1>
 
-<a href="/admin/tasks/task/add/"
-class="btn btn-primary">
+    {% if request.user.role == 'admin' %}
 
-Create Task
+    <a
+        href="/create-task/"
+        class="btn btn-primary"
+    >
 
-</a>
+        Create Task
+
+    </a>
+
+    {% endif %}
 
 </div>
 
-<table class="table table-bordered bg-white">
+<div class="card shadow-sm p-3">
 
-<thead>
+    <table class="table table-hover bg-white align-middle">
 
-<tr>
+        <thead class="table-light">
 
-<th>Title</th>
-<th>Status</th>
-<th>Project</th>
-<th>Assigned To</th>
+            <tr>
 
-</tr>
+                <th>
+                    Title
+                </th>
 
-</thead>
+                <th>
+                    Status
+                </th>
 
-<tbody>
+                <th>
+                    Project
+                </th>
 
-{% for task in tasks %}
+                <th>
+                    Assigned To
+                </th>
 
+                <th>
+                    Due Date
+                </th>
 
-<tr>
+                {% if request.user.role == 'admin' %}
 
-<td>{{ task.title }}</td>
+                <th>
+                    Action
+                </th>
 
-<td>
+                {% endif %}
 
-{% if task.status == 'done' %}
+            </tr>
 
-<span class="badge bg-success">
-Completed
-</span>
+        </thead>
 
-{% elif task.status == 'progress' %}
+        <tbody>
 
-<span class="badge bg-warning text-dark">
-In Progress
-</span>
+            {% for task in tasks %}
 
-{% else %}
+            <tr>
 
-<span class="badge bg-secondary">
-Todo
-</span>
+                <td>
 
-{% endif %}
+                    {{ task.title }}
 
-</td>
+                </td>
 
-<td>{{ task.project.title }}</td>
+                <td>
 
-<td>{{ task.assigned_to.username }}</td>
+                    {% if task.status == 'done' %}
 
-</tr>
+                    <span class="badge bg-success">
 
-{% empty %}
+                        Completed
 
-<tr>
+                    </span>
 
-<td colspan="5" class="text-center">
-No tasks available
-</td>
+                    {% elif task.status == 'progress' %}
 
-</tr>
+                    <span class="badge bg-warning text-dark">
 
-{% endfor %}
+                        In Progress
 
-</tbody>
-</table>
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge bg-secondary">
+
+                        Todo
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ task.project.title }}
+
+                </td>
+
+                <td>
+
+                    {{ task.assigned_to.username }}
+
+                </td>
+
+                <td>
+
+                    {{ task.due_date }}
+
+                </td>
+
+                {% if request.user.role == 'admin' %}
+
+                <td>
+
+                    <a
+                        href="/delete-task/{{ task.id }}/"
+                        class="btn btn-sm btn-danger"
+                    >
+
+                        Delete
+
+                    </a>
+
+                </td>
+
+                {% endif %}
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="6" class="text-center py-4">
+
+                    No tasks available
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
 
 {% endblock %}

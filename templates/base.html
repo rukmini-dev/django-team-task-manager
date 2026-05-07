@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 
@@ -6,30 +5,22 @@
 
     <title>
 
-{% block title %}
-Team Task Manager
-{% endblock %}
+        {% block title %}
+        Team Task Manager
+        {% endblock %}
 
-</title>
+    </title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    rel="stylesheet">
 
     <style>
-        .sidebar a{
-    border-radius:10px;
-    margin:5px 10px;
-}
-        .card{
-        transition:0.3s;
-    }
-
-    .card:hover{
-        transform:translateY(-5px);
-    }
 
         body{
             margin:0;
             background:#f4f6f9;
+            font-family:Arial;
         }
 
         .sidebar{
@@ -46,6 +37,9 @@ Team Task Manager
             text-decoration:none;
             padding:15px 25px;
             font-size:18px;
+            border-radius:10px;
+            margin:5px 10px;
+            transition:0.3s;
         }
 
         .sidebar a:hover{
@@ -53,13 +47,32 @@ Team Task Manager
         }
 
         .content{
-            overflow-x:auto;
             margin-left:250px;
             padding:40px;
+            overflow-x:auto;
         }
 
         .card{
             border-radius:15px;
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+        }
+
+        .profile-circle{
+            width:70px;
+            height:70px;
+            border-radius:50%;
+            background:#334155;
+            margin:auto;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:28px;
+            color:white;
+            font-weight:bold;
         }
 
     </style>
@@ -73,71 +86,72 @@ Team Task Manager
     <h3 class="text-white text-center mb-4">
         Task Manager
     </h3>
-    <p class="text-center text-light">
 
-<div class="text-center mb-4">
+    {% if request.user.is_authenticated %}
 
-    <div
-        style="
-            width:70px;
-            height:70px;
-            border-radius:50%;
-            background:#334155;
-            margin:auto;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:28px;
-            color:white;
-            font-weight:bold;
-        "
-    >
+    <div class="text-center mb-4">
 
-        {{ request.user.username|first|upper }}
+        <div class="profile-circle">
+
+            {{ request.user.username|first|upper }}
+
+        </div>
+
+        <p class="text-light mt-3 mb-1">
+
+            {{ request.user.username }}
+
+        </p>
+
+        <small class="text-secondary">
+
+            {{ request.user.role|title }}
+
+        </small>
 
     </div>
 
-    <p class="text-light mt-3 mb-1">
+    <a href="/">
+        Dashboard
+    </a>
 
-        {{ request.user.username }}
+    <a href="/projects/">
+        Projects
+    </a>
 
-    </p>
+    <a href="/tasks-page/">
+        Tasks
+    </a>
 
-    <small class="text-secondary">
+    <a href="/members/">
+        Members
+    </a>
 
-        {{ request.user.role|title }}
+    <form
+        action="/logout/"
+        method="POST"
+        class="px-3 mt-4"
+    >
 
-    </small>
+        {% csrf_token %}
 
-</div>
+        <button class="btn btn-danger w-100">
 
-    </p>
+            Logout
 
-<a href="/">Dashboard</a>
+        </button>
 
-<a href="/projects/">Projects</a>
+    </form>
 
-<a href="/tasks-page/">Tasks</a>
-
-<a href="/members/">Members</a>
-
-<form action="/logout/" method="POST">
-
-    {% csrf_token %}
-
-    <button class="btn btn-danger">
-        Logout
-    </button>
-
-</form>
+    {% endif %}
 
 </div>
 
 <div class="content">
 
-{% block content %}
+    {% block content %}
 
-{% endblock %}
+    {% endblock %}
 
 </div>
 

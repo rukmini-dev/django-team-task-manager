@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Create Project
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card p-4 shadow-sm">
+
+        <h2 class="mb-4">
+            Create Project
+        </h2>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button class="btn btn-success">
+                Create Project
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
