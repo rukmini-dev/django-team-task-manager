@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}
+Projects
+{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between mb-4">
+
+<h1>Projects</h1>
+
+<a href="/admin/projects/project/add/"
+class="btn btn-success">
+
+Create Project
+
+</a>
+
+</div>
+
+<div class="row">
+
+{% for project in projects %}
+
+<div class="col-md-4 mb-4">
+
+<div class="card p-4 shadow-sm">
+
+<h3>{{ project.title }}</h3>
+
+<p>{{ project.description }}</p>
+
+<p>
+Tasks:
+{{ project.task_set.count }}
+</p>
+
+<a href="/projects/{{ project.id }}/"
+class="btn btn-primary">
+
+View Tasks
+
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}
