@@ -2,11 +2,10 @@ from rest_framework import viewsets, permissions
 from .models import Task
 from .serializers import TaskSerializer
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
-from django.shortcuts import redirect
-from .models import Task
+
 from projects.models import Project
 from users.models import User
 
@@ -25,41 +24,6 @@ def dashboard(request):
     else:
         tasks = Task.objects.filter(assigned_to=request.user)
 
-    if request.method == 'POST' and request.user.role == 'admin':
-
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        due_date = request.POST.get('due_date')
-        assigned_to = request.POST.get('assigned_to')
-
-        Task.objects.create(
-            title=title,
-            description=description,
-            status='todo',
-            due_date=due_date,
-            assigned_to=User.objects.get(id=assigned_to),
-            project=Project.objects.first()
-        )
-
-        return redirect('/')
-
-    context = {
-        'projects': Project.objects.all(),
-        'tasks': tasks,
-        'total': tasks.count(),
-        'completed': tasks.filter(status='done').count(),
-        'pending': tasks.exclude(status='done').count(),
-        'overdue': tasks.filter(due_date__lt=now().date()).count(),
-        'users': User.objects.filter(role='member')
-    }
-
-    return render(request, 'dashboard.html', context)@login_required
-def dashboard(request):
-
-    if request.user.role == 'admin':
-        tasks = Task.objects.all()
-    else:
-        tasks = Task.objects.filter(assigned_to=request.user)
     if request.method == 'POST' and request.user.role == 'admin':
 
         form_type = request.POST.get('form_type')
@@ -95,7 +59,8 @@ def dashboard(request):
         'completed': tasks.filter(status='done').count(),
         'pending': tasks.exclude(status='done').count(),
         'overdue': tasks.filter(due_date__lt=now().date()).count(),
-        'users': User.objects.filter(role='member')
+        'users': User.objects.filter(role='member'),
+        'projects': Project.objects.all()
     }
 
     return render(
@@ -103,6 +68,8 @@ def dashboard(request):
         'dashboard/dashboard.html',
         context
     )
+
+
 @login_required
 def projects_page(request):
 
@@ -134,7 +101,9 @@ def project_detail(request, id):
 
 @login_required
 def tasks_page(request):
+
     tasks = Task.objects.all()
+
     return render(
         request,
         'tasks/tasks.html',
@@ -144,7 +113,9 @@ def tasks_page(request):
 
 @login_required
 def members_page(request):
+
     users = User.objects.all()
+
     return render(
         request,
         'members/members.html',
